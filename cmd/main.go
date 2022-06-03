@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 
 	"github.com/Alan-prog/git_trigger/pkg/commandLine"
 	"github.com/Alan-prog/git_trigger/pkg/workers"
@@ -9,9 +10,16 @@ import (
 )
 
 func main() {
+	args := os.Args
+	if len(args) != 3 {
+		logrus.Errorf("command format should have 2 params repoName and makeCommand")
+		return
+	}
+
 	ctx := context.Background()
 
-	repo := "Alan-prog/wireguard_vpn"
+	repo := args[1]
+	makeCommand := args[2]
 
 	consoleConf, err := commandLine.NewClient(repo)
 	if err != nil {
@@ -19,7 +27,7 @@ func main() {
 		return
 	}
 
-	worker := workers.NewWorker(consoleConf)
+	worker := workers.NewWorker(consoleConf, makeCommand)
 	if err := worker.Run(ctx); err != nil {
 		logrus.Errorf("error Runner: %v", err)
 	}

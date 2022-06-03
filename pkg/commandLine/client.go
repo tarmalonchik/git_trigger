@@ -72,12 +72,12 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 	return false, nil
 }
 
-func (c *Client) Maker(ctx context.Context) error {
+func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 	var (
 		out bytes.Buffer
 	)
 
-	cmd := exec.CommandContext(ctx, "make", "master")
+	cmd := exec.CommandContext(ctx, "make", makeCommand)
 	cmd.Dir = c.dir
 	cmd.Stdout = &out
 	cmd.Stderr = &out

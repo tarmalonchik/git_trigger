@@ -12,20 +12,26 @@ import (
 )
 
 type Worker struct {
-	client     *commandLine.Client
-	globalStop context.CancelFunc
+	client      *commandLine.Client
+	globalStop  context.CancelFunc
+	makeCommand string
 
 	smallStopFunc context.CancelFunc
 	smallStopCtx  context.Context
 }
 
-func NewWorker(client *commandLine.Client) *Worker {
+func NewWorker(client *commandLine.Client, makeCommand string) *Worker {
 	return &Worker{
-		client: client,
+		client:      client,
+		makeCommand: makeCommand,
 	}
 }
 
 func (t *Worker) Run(ctx context.Context) error {
+	if err := t.client.Clone(ctx); err != nil {
+		return fmt.Errorf("workers.Run error pulling: %w", err)
+	}
+
 	ctx, t.globalStop = context.WithCancel(ctx)
 	t.smallStopCtx, t.smallStopFunc = context.WithCancel(ctx)
 	t.smallStopFunc()
@@ -41,16 +47,13 @@ func (t *Worker) Run(ctx context.Context) error {
 			return nil
 		case <-t.smallStopCtx.Done():
 			time.Sleep(1 * time.Second)
-			fmt.Println("trying to make")
 			smallStopCtx, smallStopFunc := context.WithCancel(ctx)
 			t.smallStopCtx = smallStopCtx
 			t.smallStopFunc = smallStopFunc
-			fmt.Println("making with small stop")
-			if err := t.client.Maker(t.smallStopCtx); err != nil {
+			if err := t.client.Maker(t.smallStopCtx, t.makeCommand); err != nil {
 				t.smallStopFunc()
 				logrus.Errorf("workers.Run error while making make command: %v", err)
 			}
-			fmt.Println("made")
 		}
 	}
 }
@@ -65,9 +68,7 @@ func (t *Worker) check(ctx context.Context) {
 				continue
 			}
 			if action {
-				fmt.Println("was action")
 				t.smallStopFunc()
-				fmt.Println("was stopped small")
 			}
 		}
 	}
