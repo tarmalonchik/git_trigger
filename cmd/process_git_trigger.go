@@ -48,9 +48,6 @@ func initDirsSystem() error {
 	if err := os.MkdirAll("logs/pull", 0777); err != nil {
 		return err
 	}
-	if err := os.MkdirAll("bin", 0777); err != nil {
-		return err
-	}
 
 	file, err := os.Create("logs/clone/errors")
 	if err != nil {
