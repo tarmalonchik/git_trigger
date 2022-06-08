@@ -2,4 +2,4 @@
 
 git pull origin master
 
-go run cmd/process_git_trigger.go Alan-prog/wireguard_vpn slave &
+go run /home/alankoch/git_trigger/cmd/process_git_trigger.go Alan-prog/wireguard_vpn slave &
