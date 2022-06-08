@@ -2,7 +2,4 @@
 
 SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || exit
 cd "$SCRIPT_PATH" || exit
-
-go build -o bin cmd/process_git_trigger.go
-git pull origin master
 bin/process_git_trigger Alan-prog/wireguard_vpn slave
