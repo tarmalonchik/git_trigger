@@ -10,13 +10,18 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
 	args := os.Args
 	if len(args) != 3 {
 		logrus.Errorf("command format should have 2 params repoName and makeCommand")
 		return
 	}
 
-	ctx := context.Background()
+	if err := initDirsSystem(); err != nil {
+		logrus.Errorf("error while initing dirs: %v", err)
+		return
+	}
 
 	repo := args[1]
 	makeCommand := args[2]
@@ -31,4 +36,68 @@ func main() {
 	if err := worker.Run(ctx); err != nil {
 		logrus.Errorf("error Runner: %v", err)
 	}
+}
+
+func initDirsSystem() error {
+	if err := os.MkdirAll("logs/clone", 0777); err != nil {
+		return err
+	}
+	if err := os.MkdirAll("logs/maker", 0777); err != nil {
+		return err
+	}
+	if err := os.MkdirAll("logs/pull", 0777); err != nil {
+		return err
+	}
+	if err := os.MkdirAll("bin", 0777); err != nil {
+		return err
+	}
+
+	file, err := os.Create("logs/clone/errors")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/clone/info")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/maker/errors")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/maker/info")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/pull/errors")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/pull/info")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	return nil
 }
