@@ -5,6 +5,7 @@ cd "$SCRIPT_PATH" || exit
 
 export GOCACHE=/root/go/cache
 export GO111MODULE=on
+export GOPATH=''
 
 go build -o bin cmd/process_git_trigger.go
 git pull origin master
