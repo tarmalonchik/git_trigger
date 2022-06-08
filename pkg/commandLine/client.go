@@ -1,9 +1,10 @@
 package commandLine
 
 import (
-	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -27,20 +28,33 @@ func NewClient(repo string) (*Client, error) {
 }
 
 func (c *Client) Clone(ctx context.Context) error {
-	var (
-		out    bytes.Buffer
-		outErr bytes.Buffer
+	const (
+		infoFileName   = "logs/clone/info"
+		errorsFileName = "logs/clone/errors"
 	)
-	cmd := exec.CommandContext(ctx, "git", "clone", c.pullString)
-	cmd.Stdout = &out
-	cmd.Stderr = &outErr
+
+	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Clone error making info file: %w", err)
+	}
+	defer func() { _ = infoFile.Close() }()
+	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Clone error making errors file: %w", err)
+	}
+	defer func() { _ = errorsFile.Close() }()
+
+	cmd := exec.CommandContext(ctx, "git", "clone", c.pullString, "--progress")
+	cmd.Stdout = infoFile
+	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("commandLine.Clone error start: %w", err)
 	}
 
 	if err := cmd.Wait(); err != nil {
-		if strings.Contains(outErr.String(), "already exists") {
+		data, err := ioutil.ReadFile(errorsFileName)
+		if strings.Contains(string(data), "already exists") {
 			return nil
 		}
 		return fmt.Errorf("commandLine.Clone error wait: %w", err)
@@ -49,14 +63,26 @@ func (c *Client) Clone(ctx context.Context) error {
 }
 
 func (c *Client) Pull(ctx context.Context) (bool, error) {
-	var (
-		out bytes.Buffer
+	const (
+		infoFileName   = "logs/pull/info"
+		errorsFileName = "logs/pull/errors"
 	)
+
+	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return false, fmt.Errorf("commandLine.Pull error making info file: %w", err)
+	}
+	defer func() { _ = infoFile.Close() }()
+	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return false, fmt.Errorf("commandLine.Pull error making errors file: %w", err)
+	}
+	defer func() { _ = errorsFile.Close() }()
 
 	cmd := exec.CommandContext(ctx, "git", "pull", "origin", "master", "--progress")
 	cmd.Dir = c.dir
-	cmd.Stdout = &out
-	cmd.Stderr = &out
+	cmd.Stdout = infoFile
+	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
 		return false, fmt.Errorf("commandLine.Pull error start: %w", err)
@@ -66,30 +92,40 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 		return false, fmt.Errorf("commandLine.Pull error wait: %w", err)
 	}
 
-	if strings.Contains(out.String(), "Updating") {
+	data, err := ioutil.ReadFile(infoFileName)
+	if strings.Contains(string(data), "Updating") {
 		return true, nil
 	}
 	return false, nil
 }
 
 func (c *Client) Maker(ctx context.Context, makeCommand string) error {
-	var (
-		out bytes.Buffer
+	const (
+		infoFileName   = "logs/maker/info"
+		errorsFileName = "logs/maker/errors"
 	)
+
+	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Maker error making info file: %w", err)
+	}
+	defer func() { _ = infoFile.Close() }()
+	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Maker error making errors file: %w", err)
+	}
+	defer func() { _ = errorsFile.Close() }()
 
 	cmd := exec.CommandContext(ctx, "make", makeCommand)
 	cmd.Dir = c.dir
-	cmd.Stdout = &out
-	cmd.Stderr = &out
+	cmd.Stdout = infoFile
+	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("commandLine.Maker error start: %w", err)
 	}
-
 	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("commandLine.Maker error wait: %w", err)
 	}
-	fmt.Println(out.String())
-
 	return nil
 }

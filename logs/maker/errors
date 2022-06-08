@@ -1,0 +1,87 @@
+#1 [internal] load build definition from Dockerfile
+#1 sha256:3903b925c3e55f31619c405a2ff883735bedd2bbb713f1c7afc48a406eed5418
+#1 transferring dockerfile: 37B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 sha256:3a26815f5541b74ffe6cdf3e018e8f6ae744b4b0325d67e54ec8a165078f5c52
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/alpine:latest
+#3 sha256:13549c58a76bcb5dac9d52bc368a8fb6b5cf7659f94e3fa6294917b85546978d
+#3 DONE 0.9s
+
+#4 [ 1/15] FROM docker.io/library/alpine:latest@sha256:686d8c9dfa6f3ccfc8230bc3178d23f84eeaf7e457f36f271ab1acc53015037c
+#4 sha256:798a1a5b514b523dfc578e1235428af0e121661ed28a2871fa3681e96976380c
+#4 DONE 0.0s
+
+#8 [internal] load build context
+#8 sha256:bc7f0c88e3e3ae6bf89d2714c28d6858e90ffdf9aa467f14b154c14d106112a9
+#8 transferring context: 10.00kB 0.0s done
+#8 DONE 0.0s
+
+#12 [ 8/15] COPY ./configs ./configs
+#12 sha256:8232c5d6afcfddc060d97201d51a0e1759bc6f613a124e2baa3602902e56a01b
+#12 CACHED
+
+#18 [14/15] RUN go build  -o bin/master/main cmd/master/main.go
+#18 sha256:b1875d52c36fe7804f085e78b41be09c72201b342c2c72feef4697205ce398db
+#18 CACHED
+
+#9 [ 5/15] COPY ./go.mod ./go.mod
+#9 sha256:0253e2d639810ffb22afd32896b3e0aeccc18499ce2c299981e53105aca4dbba
+#9 CACHED
+
+#6 [ 3/15] RUN apk add --no-cache git make musl-dev go
+#6 sha256:c82996f93c34853f6fda2cb82a0f20c0a39361a90edb6337cee8e4e3aea67156
+#6 CACHED
+
+#10 [ 6/15] COPY ./go.sum ./go.sum
+#10 sha256:30bb12c5e15c2688909026e1ba82608faaf13038e067cb4ae4ff6e5dc445bfee
+#10 CACHED
+
+#11 [ 7/15] COPY ./cmd ./cmd
+#11 sha256:bb12e696b99889cf37f26786c63cc28f9df01255410c42822d55660ca2c3f90d
+#11 CACHED
+
+#13 [ 9/15] COPY ./internal ./internal
+#13 sha256:88ebbe54de039d056b77e8ffa13c21c75cf16a3468851e79ac961791687c0f51
+#13 CACHED
+
+#5 [ 2/15] RUN apk add -U wireguard-tools
+#5 sha256:c0c91faa44988c09e702fc44e5bb3c03a401d362c14c22448692a2c733785189
+#5 CACHED
+
+#15 [11/15] COPY ./pkg ./pkg
+#15 sha256:8782204051ac7f234280dfc27fde597f85faad57e7908e006a40814f03393309
+#15 CACHED
+
+#7 [ 4/15] WORKDIR /go/src/github.com/service
+#7 sha256:d51e2afb672a5192e39b82add29f242c93053890ef6e3c842516951472ef06bb
+#7 CACHED
+
+#17 [13/15] RUN mkdir bin
+#17 sha256:db9bcaa45b16a2853c04b1223b3eceb1bee9a1a274c6dd99e21ef96e1f713232
+#17 CACHED
+
+#14 [10/15] COPY ./migrations ./migrations
+#14 sha256:1ed82e05aa11d947adad4869d606ede5e3ece1733024e0d11ff740bc217206e2
+#14 CACHED
+
+#16 [12/15] RUN go test ./...
+#16 sha256:97e742f0a179d7131774213d38ed2d2e4b6582ff1deb0a2df0fde1bb41ca6c63
+#16 CACHED
+
+#19 [15/15] RUN go build  -o bin/slave/main cmd/slave/main.go
+#19 sha256:5275635b3acf79790cc4f265c927782aefa16d3d0b4e8db23434760e7a7aa6cd
+#19 CACHED
+
+#20 exporting to image
+#20 sha256:e8c613e07b0b7ff33893b694f7759a10d42e180f2b4dc349fb57dc6b71dcab00
+#20 exporting layers done
+#20 writing image sha256:a6378bdf5322edbf1dde9ff909644c9413a53a6f303c8648ffa89f124c6e6e0a done
+#20 naming to docker.io/library/master_service done
+#20 DONE 0.0s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
