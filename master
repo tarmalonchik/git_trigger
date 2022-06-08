@@ -4,7 +4,7 @@ SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || exit
 cd "$SCRIPT_PATH" || exit
 
 export GOCACHE=/root/go/cache
-export GOPATH=$SCRIPT_PATH
+export GO111MODULE=on
 
 go build -o bin cmd/process_git_trigger.go
 git pull origin master
