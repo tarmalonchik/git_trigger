@@ -8,7 +8,7 @@ latest: Pulling from library/postgres
 Digest: sha256:2d1e636f07781d4799b3f2edbff78a0a5494f24c4512cb56a83ebfd0e04ec074
 Status: Image is up to date for postgres:latest
 docker.io/library/postgres:latest
-353bd8b91e95f91ce406c0be3a693e510ee25c450bf7996326e9076d52fb9715
+b69be2b98732be51b013f19b0253e67f981df7148ba7074dd682a385a941f291
 done
 master_service
-2619d0f64236d1641bd8c0250dd9d515671e896ad39f81da26865a0f72a13bb3
+41f448fb969423596e8fed686645f009224a985553d121a8a1ecf3897a2f07ad

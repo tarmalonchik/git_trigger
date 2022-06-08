@@ -1,83 +1,82 @@
-Error response from daemon: driver failed programming external connectivity on endpoint master_db_container (ab75cbbdd8270cb986c81777a45ab85fb55beda0eab47c825fe1784933f08605): Bind for 127.0.0.1:6667 failed: port is already allocated
+Error response from daemon: driver failed programming external connectivity on endpoint master_db_container (cc55703a0355eb7ef534a502163c4324bfd9c480295fe3be9f24100da75901a9): Bind for 127.0.0.1:6667 failed: port is already allocated
 Error: failed to start containers: master_db_container
-docker: Error response from daemon: driver failed programming external connectivity on endpoint master_db_container (6fa4fb738ee205616b8d8e5b0fd64cc35971c1fd3ddeb788399f0f34f3179901): Bind for 127.0.0.1:6667 failed: port is already allocated.
+docker: Error response from daemon: driver failed programming external connectivity on endpoint master_db_container (5719920f386d51cf7b01c0e4856417a4f123c6a1ddd894d4f0c5066db24d847d): Bind for 127.0.0.1:6667 failed: port is already allocated.
 #1 [internal] load build definition from Dockerfile
-#1 sha256:c9f104ae189fa474f267eaf2331726e379475f1a0b98273589cdf05d0657551e
-#1 transferring dockerfile: 37B done
-#1 DONE 0.0s
-
-#2 [internal] load .dockerignore
-#2 sha256:ef2f35cb7970990e63ae54fa4670ce09cf4896193c33d50152d061639a6ea593
+#1 sha256:da318871ad24857ba2d173cc499383b8a2eb645c8966a65fb23fec4e48982130
+#1 transferring dockerfile: 35B done
+#1 CANCELED
+failed to solve with frontend dockerfile.v0: failed to read dockerfile: context canceled
+9a71818cee6d989c60b6
 #2 transferring context: 2B done
 #2 DONE 0.0s
 
 #3 [internal] load metadata for docker.io/library/alpine:latest
 #3 sha256:13549c58a76bcb5dac9d52bc368a8fb6b5cf7659f94e3fa6294917b85546978d
-#3 DONE 0.8s
+#3 DONE 2.0s
 
 #4 [ 1/15] FROM docker.io/library/alpine:latest@sha256:686d8c9dfa6f3ccfc8230bc3178d23f84eeaf7e457f36f271ab1acc53015037c
 #4 sha256:798a1a5b514b523dfc578e1235428af0e121661ed28a2871fa3681e96976380c
 #4 DONE 0.0s
 
 #8 [internal] load build context
-#8 sha256:386e3cebb7ff605d5ac19511119cd5fc20999af117897225bc933ec757c30feb
+#8 sha256:eecb6c3c3c3c4bf6087559ce060cfb3d31c517873cdb021923499628a0b4f966
 #8 transferring context: 10.00kB 0.0s done
 #8 DONE 0.0s
-
-#6 [ 3/15] RUN apk add --no-cache git make musl-dev go
-#6 sha256:c82996f93c34853f6fda2cb82a0f20c0a39361a90edb6337cee8e4e3aea67156
-#6 CACHED
-
-#15 [11/15] COPY ./pkg ./pkg
-#15 sha256:01dc7ade1f7e646cbaf66a02533a02c0316e79a11f12a3b3d8a702f24dca38e2
-#15 CACHED
-
-#16 [12/15] RUN go test ./...
-#16 sha256:a142989ac4b48b9fea9cf8785679e8ca0f3840377dd0e35b9228d5c64b324bb0
-#16 CACHED
-
-#13 [ 9/15] COPY ./internal ./internal
-#13 sha256:3a05526416869de93fcfff333f9afc64441fb4081b42c1ed84904ea1cc29ff1d
-#13 CACHED
-
-#10 [ 6/15] COPY ./go.sum ./go.sum
-#10 sha256:5d320a0e54e06fff1c641fcdd4066e1c552eb342c5d07b66b4958ef937d748de
-#10 CACHED
-
-#12 [ 8/15] COPY ./configs ./configs
-#12 sha256:2bd08064d385ef739a8d24bbf3dbfdceaaefca31576fb9ddf643c0cd802d83ae
-#12 CACHED
-
-#17 [13/15] RUN mkdir bin
-#17 sha256:2c182688e2ec0e57f8ef74a48251ad5d035862eff7502feed3fda0d575d98a06
-#17 CACHED
-
-#9 [ 5/15] COPY ./go.mod ./go.mod
-#9 sha256:fb7b4a869ebe28afddca2d73ee4be6b4d352380bc52c5e6adb42470eba92ee13
-#9 CACHED
-
-#11 [ 7/15] COPY ./cmd ./cmd
-#11 sha256:bb36995a7fd658669b516767815c3f1aee9b050f32fee18d6b565369053bfaab
-#11 CACHED
 
 #7 [ 4/15] WORKDIR /go/src/github.com/service
 #7 sha256:d51e2afb672a5192e39b82add29f242c93053890ef6e3c842516951472ef06bb
 #7 CACHED
 
+#9 [ 5/15] COPY ./go.mod ./go.mod
+#9 sha256:cd47e7a7eb05f670bbb60cc06d69fd294e69c1a2bb71a0a6ebe24812dcdcd8be
+#9 CACHED
+
+#11 [ 7/15] COPY ./cmd ./cmd
+#11 sha256:90196846d3890a1400b1e88d7c712d26988192e57b9a2d091de9f4611ab4ff76
+#11 CACHED
+
+#16 [12/15] RUN go test ./...
+#16 sha256:14fa0c3cf49dbe726291c5f60fffbd6a5c6fbe625fc920e4463f3b842a0f6f58
+#16 CACHED
+
+#13 [ 9/15] COPY ./internal ./internal
+#13 sha256:9b6a3eed70a84839d4c01496693e7e02681b71b158c27c4822588718f3d68aff
+#13 CACHED
+
+#18 [14/15] RUN go build  -o bin/master/main cmd/master/main.go
+#18 sha256:9e4791d943876b3ca8542c13a1b69149ade369d7852544d61f0dd0bb70c0ed4d
+#18 CACHED
+
+#17 [13/15] RUN mkdir bin
+#17 sha256:96c61a9d14ecd304293e9bb4333c8e24103a8686045558fd086df087269c78ec
+#17 CACHED
+
+#10 [ 6/15] COPY ./go.sum ./go.sum
+#10 sha256:e198c01922d02ebe40e0b18c36dc25a614f54e95377f6ba2f882e2f5c8dd3574
+#10 CACHED
+
+#15 [11/15] COPY ./pkg ./pkg
+#15 sha256:88ca9721249c8fbd3b9f8149e7d72b6b9a5c146a93180503b04e05ff509c9a61
+#15 CACHED
+
+#6 [ 3/15] RUN apk add --no-cache git make musl-dev go
+#6 sha256:c82996f93c34853f6fda2cb82a0f20c0a39361a90edb6337cee8e4e3aea67156
+#6 CACHED
+
 #5 [ 2/15] RUN apk add -U wireguard-tools
 #5 sha256:c0c91faa44988c09e702fc44e5bb3c03a401d362c14c22448692a2c733785189
 #5 CACHED
 
+#12 [ 8/15] COPY ./configs ./configs
+#12 sha256:bdfbcca718dd6ccfa63a6cc77c7702cf08d59907525ccde2b66f2c5b4a8afd59
+#12 CACHED
+
 #14 [10/15] COPY ./migrations ./migrations
-#14 sha256:68f112575ecb71c4343d9005f882870b69b137e787667e7000f3953789a023c4
+#14 sha256:9f7e72c748c6e68c466fa39eeca7bae380a88d6f0f2acc8f166f03d9aeebbb2e
 #14 CACHED
 
-#18 [14/15] RUN go build  -o bin/master/main cmd/master/main.go
-#18 sha256:47599ef45a28744b2aed44bae210efa4727c144aea821458d50dc91462748b3b
-#18 CACHED
-
 #19 [15/15] RUN go build  -o bin/slave/main cmd/slave/main.go
-#19 sha256:586ab1a48c425ad2477c8d4407204677248036f02a60d30df38f8c7c536defbe
+#19 sha256:ba1082d899b4c663891d435096bc0615afbfec552a10e0013ce6368883a4b6e6
 #19 CACHED
 
 #20 exporting to image
