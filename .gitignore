@@ -2,3 +2,4 @@
 logs/clone/*
 logs/maker/*
 logs/pull/*
+bin/process_git_trigger
