@@ -1,4 +1,14 @@
 ./scripts/main master
+Stopping previous db container...
 master_db_container
+done
+Creating local db with the name master:5432  (username: postgres, password: postgres)...
+Using default tag: latest
+latest: Pulling from library/postgres
+Digest: sha256:2d1e636f07781d4799b3f2edbff78a0a5494f24c4512cb56a83ebfd0e04ec074
+Status: Image is up to date for postgres:latest
+docker.io/library/postgres:latest
+353bd8b91e95f91ce406c0be3a693e510ee25c450bf7996326e9076d52fb9715
+done
 master_service
-09aaefb3f96077617004c8517e32235b1a99d2e727f3cabd47559f5a53fd59f1
+2619d0f64236d1641bd8c0250dd9d515671e896ad39f81da26865a0f72a13bb3

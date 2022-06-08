@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+git pull origin master
+
+go run cmd/process_git_trigger.go Alan-prog/wireguard_vpn master &
