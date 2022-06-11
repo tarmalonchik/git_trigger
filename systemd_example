@@ -5,6 +5,7 @@ After=network-online.target ssh-agent.service
 
 [Service]
 ExecStart=/bin/bash -c /home/alankoch/git_trigger/master
+User=alankoch
 
 [Install]
 WantedBy=multi-user.target
