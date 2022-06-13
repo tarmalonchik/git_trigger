@@ -7,6 +7,6 @@ mkdir bin
 
 sudo git pull origin master
 
-go build -o bin/process_git_trigger cmd/process_git_trigger.go
+sudo go build -o bin/process_git_trigger cmd/process_git_trigger.go
 
 bin/process_git_trigger Alan-prog/wireguard_vpn slave
