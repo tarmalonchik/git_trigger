@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/Alan-prog/git_trigger/pkg/commandLine"
@@ -41,6 +42,7 @@ func (t *Worker) Run(ctx context.Context) error {
 	go t.check(ctx)
 
 	for {
+		runtime.GC()
 		select {
 		case <-ctx.Done():
 			logrus.Info("workers.Run successful stop")
@@ -60,16 +62,14 @@ func (t *Worker) Run(ctx context.Context) error {
 
 func (t *Worker) check(ctx context.Context) {
 	for {
-		select {
-		case <-time.NewTicker(1 * time.Second).C:
-			action, err := t.client.Pull(ctx)
-			if err != nil {
-				logrus.Errorf("workers.check error getting action: %v", err)
-				continue
-			}
-			if action {
-				t.smallStopFunc()
-			}
+		time.Sleep(1 * time.Second)
+		action, err := t.client.Pull(ctx)
+		if err != nil {
+			logrus.Errorf("workers.check error getting action: %v", err)
+			continue
+		}
+		if action {
+			t.smallStopFunc()
 		}
 	}
 }
