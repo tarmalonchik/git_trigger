@@ -5,7 +5,7 @@ cd "$SCRIPT_PATH" || exit
 
 mkdir bin
 
-sudo git pull origin master
+git pull origin master
 
 sudo go build -o bin/process_git_trigger cmd/process_git_trigger.go
 
