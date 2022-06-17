@@ -9,4 +9,4 @@ sudo git pull origin master
 
 sudo go build -o bin/process_git_trigger cmd/process_git_trigger.go
 
-bin/process_git_trigger Alan-prog/wireguard_vpn slave
+sudo bin/process_git_trigger Alan-prog/wireguard_vpn slave
