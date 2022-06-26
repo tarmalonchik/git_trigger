@@ -33,7 +33,7 @@ func (t *Worker) Run(ctx context.Context) error {
 		return fmt.Errorf("workers.Run error cloning: %w", err)
 	}
 	for {
-
+		time.Sleep(1 * time.Second)
 	}
 
 	ctx, t.globalStop = context.WithCancel(ctx)
