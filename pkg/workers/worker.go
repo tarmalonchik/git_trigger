@@ -33,6 +33,15 @@ func (t *Worker) Run(ctx context.Context) error {
 		return fmt.Errorf("workers.Run error cloning: %w", err)
 	}
 
+	_, err := t.client.Pull(ctx)
+	if err != nil {
+		logrus.Errorf("workers.check error pulling first time: %v", err)
+	}
+
+	if err := t.client.Maker(t.smallStopCtx, t.makeCommand); err != nil {
+		logrus.Errorf("workers.Run error while making first make command: %v", err)
+	}
+
 	ctx, t.globalStop = context.WithCancel(ctx)
 	t.smallStopCtx, t.smallStopFunc = context.WithCancel(ctx)
 	t.smallStopFunc()
