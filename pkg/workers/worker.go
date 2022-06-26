@@ -38,7 +38,7 @@ func (t *Worker) Run(ctx context.Context) error {
 		logrus.Errorf("workers.check error pulling first time: %v", err)
 	}
 
-	if err := t.client.Maker(t.smallStopCtx, t.makeCommand); err != nil {
+	if err := t.client.Maker(ctx, t.makeCommand); err != nil {
 		logrus.Errorf("workers.Run error while making first make command: %v", err)
 	}
 
