@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || exit 1
-cd "$SCRIPT_PATH" || exit 1
+SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || (echo "error while pwd" && exit 1)
+cd "$SCRIPT_PATH" || (echo "error while cd path" && exit 1)
 
-git pull origin master
+git pull origin master || (echo "error while pulling git trigger" && exit 1)
 
-go run cmd/main.go Alan-prog/wireguard_vpn master
+go run cmd/main.go Alan-prog/wireguard_vpn master || (echo "error while starting go service" && exit 1)
