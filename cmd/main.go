@@ -12,8 +12,6 @@ import (
 func main() {
 	ctx := context.Background()
 
-	os.WriteFile("some", []byte("some"), 0777)
-
 	args := os.Args
 	if len(args) != 3 {
 		logrus.Errorf("command format should have 2 params repoName and makeCommand")
