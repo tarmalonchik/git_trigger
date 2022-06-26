@@ -1,11 +1,12 @@
 [Unit]
 Description=script which runs git trigger
-Wants=network-online.target
+Wants=network-online.target ssh-agent.service
 After=network-online.target ssh-agent.service
 
 [Service]
-ExecStart=/bin/bash -c /home/alankoch/git_trigger/master
-User=alankoch
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin
+Environment=HOME=/root
+ExecStart=/bin/bash -c /root/git_trigger/master
 
 [Install]
 WantedBy=multi-user.target
