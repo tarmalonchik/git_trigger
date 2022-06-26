@@ -2,6 +2,7 @@ package workers
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -28,9 +29,12 @@ func NewWorker(client *commandLine.Client, makeCommand string) *Worker {
 }
 
 func (t *Worker) Run(ctx context.Context) error {
-	//if err := t.client.Clone(ctx); err != nil {
-	//	return fmt.Errorf("workers.Run error cloning: %w", err)
-	//}
+	if err := t.client.Clone(ctx); err != nil {
+		return fmt.Errorf("workers.Run error cloning: %w", err)
+	}
+	for {
+
+	}
 
 	ctx, t.globalStop = context.WithCancel(ctx)
 	t.smallStopCtx, t.smallStopFunc = context.WithCancel(ctx)
