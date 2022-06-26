@@ -57,7 +57,7 @@ func (t *Worker) Run(ctx context.Context) error {
 			logrus.Info("workers.Run successful stop")
 			return nil
 		case <-t.smallStopCtx.Done():
-			time.Sleep(1 * time.Second)
+			time.Sleep(10 * time.Second)
 			smallStopCtx, smallStopFunc := context.WithCancel(ctx)
 			t.smallStopCtx = smallStopCtx
 			t.smallStopFunc = smallStopFunc
