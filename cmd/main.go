@@ -12,7 +12,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	logrus.Printf("here is some shit")
+	os.WriteFile("some", []byte("some"), 0777)
 
 	args := os.Args
 	if len(args) != 3 {
