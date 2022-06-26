@@ -12,7 +12,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	logrus.Info("here is some shit")
+	logrus.Printf("here is some shit")
 
 	args := os.Args
 	if len(args) != 3 {
