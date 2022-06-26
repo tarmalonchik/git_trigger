@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || exit 0
-cd "$SCRIPT_PATH" || exit 0
+SCRIPT_PATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" || exit
+cd "$SCRIPT_PATH" || exit
 
 git pull origin master
 
