@@ -32,9 +32,6 @@ func (t *Worker) Run(ctx context.Context) error {
 	if err := t.client.Clone(ctx); err != nil {
 		return fmt.Errorf("workers.Run error cloning: %w", err)
 	}
-	for {
-		time.Sleep(1 * time.Second)
-	}
 
 	ctx, t.globalStop = context.WithCancel(ctx)
 	t.smallStopCtx, t.smallStopFunc = context.WithCancel(ctx)

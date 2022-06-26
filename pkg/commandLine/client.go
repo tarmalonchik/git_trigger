@@ -93,6 +93,10 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 	}
 
 	data, err := ioutil.ReadFile(infoFileName)
+	if err != nil {
+		return false, fmt.Errorf("commandLine.Pull error reading file: %w", err)
+	}
+
 	if strings.Contains(string(data), "Updating") {
 		return true, nil
 	}
