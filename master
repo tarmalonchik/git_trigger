@@ -5,4 +5,4 @@ cd "$SCRIPT_PATH" || exit
 
 git pull origin master
 
-#go run cmd/main.go Alan-prog/wireguard_vpn master
+go run cmd/main.go Alan-prog/wireguard_vpn master
