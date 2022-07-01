@@ -1,6 +1,7 @@
 package commandLine
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
@@ -31,6 +32,7 @@ func (c *Client) Clone(ctx context.Context) error {
 	const (
 		infoFileName   = "logs/clone/info"
 		errorsFileName = "logs/clone/errors"
+		lookForString  = "already exists"
 	)
 
 	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
@@ -54,7 +56,7 @@ func (c *Client) Clone(ctx context.Context) error {
 
 	if err := cmd.Wait(); err != nil {
 		data, err := ioutil.ReadFile(errorsFileName)
-		if strings.Contains(string(data), "already exists") {
+		if strings.Contains(string(data), lookForString) {
 			return nil
 		}
 		return fmt.Errorf("commandLine.Clone error wait: %w", err)
@@ -66,6 +68,7 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 	const (
 		infoFileName   = "logs/pull/info"
 		errorsFileName = "logs/pull/errors"
+		lookForString  = "Updating"
 	)
 
 	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
@@ -97,7 +100,7 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 		return false, fmt.Errorf("commandLine.Pull error reading file: %w", err)
 	}
 
-	if strings.Contains(string(data), "Updating") {
+	if strings.Contains(string(data), lookForString) {
 		return true, nil
 	}
 	return false, nil
@@ -130,6 +133,34 @@ func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 	}
 	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("commandLine.Maker error wait: %w", err)
+	}
+	return nil
+}
+
+func (c *Client) Checkout(ctx context.Context, branchName string) error {
+	const (
+		lookForString = "did not match any file(s) known to git"
+	)
+	var (
+		info   = bytes.NewBuffer([]byte{})
+		errors = bytes.NewBuffer([]byte{})
+	)
+
+	cmd := exec.CommandContext(ctx, "git", "checkout", branchName)
+	cmd.Dir = c.dir
+	cmd.Stdout = info
+	cmd.Stderr = errors
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("commandLine.Checkout error start: %w", err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return fmt.Errorf("commandLine.Checkout error wait: %w", err)
+	}
+
+	if strings.Contains(errors.String(), lookForString) {
+		return nil
 	}
 	return nil
 }

@@ -16,21 +16,27 @@ type Worker struct {
 	client      *commandLine.Client
 	globalStop  context.CancelFunc
 	makeCommand string
+	branchName  string
 
 	smallStopFunc context.CancelFunc
 	smallStopCtx  context.Context
 }
 
-func NewWorker(client *commandLine.Client, makeCommand string) *Worker {
+func NewWorker(client *commandLine.Client, makeCommand string, branchName string) *Worker {
 	return &Worker{
 		client:      client,
 		makeCommand: makeCommand,
+		branchName:  branchName,
 	}
 }
 
 func (t *Worker) Run(ctx context.Context) error {
 	if err := t.client.Clone(ctx); err != nil {
 		return fmt.Errorf("workers.Run error cloning: %w", err)
+	}
+
+	if err := t.client.Checkout(ctx, t.branchName); err != nil {
+		return fmt.Errorf("workers.Run error checkout: %w", err)
 	}
 
 	_, err := t.client.Pull(ctx)

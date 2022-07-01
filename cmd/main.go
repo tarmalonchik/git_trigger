@@ -9,12 +9,20 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	defaultBranchName = "master"
+)
+
 func main() {
+	var (
+		branchName string
+	)
+
 	ctx := context.Background()
 
 	args := os.Args
-	if len(args) != 3 {
-		logrus.Errorf("command format should have 2 params repoName and makeCommand")
+	if len(args) > 4 || len(args) < 3 {
+		logrus.Errorf("command format should have 2 or 3 params repoName,makeCommand and branchName (is not requeired default using master)")
 		return
 	}
 
@@ -25,6 +33,13 @@ func main() {
 
 	repo := args[1]
 	makeCommand := args[2]
+	if len(args) > 3 {
+		branchName = args[3]
+	}
+
+	if branchName == "" {
+		branchName = defaultBranchName
+	}
 
 	consoleConf, err := commandLine.NewClient(repo)
 	if err != nil {
@@ -32,7 +47,7 @@ func main() {
 		return
 	}
 
-	worker := workers.NewWorker(consoleConf, makeCommand)
+	worker := workers.NewWorker(consoleConf, makeCommand, branchName)
 	if err := worker.Run(ctx); err != nil {
 		logrus.Errorf("error Runner: %v", err)
 	}
