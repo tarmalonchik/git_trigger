@@ -1,6 +1,4 @@
 .idea
-logs/clone/*
-logs/maker/*
-logs/pull/*
+logs/*
 bin/process_git_trigger
 wireguard_vpn
