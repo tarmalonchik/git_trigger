@@ -63,6 +63,9 @@ func initDirsSystem() error {
 	if err := os.MkdirAll("logs/pull", 0777); err != nil {
 		return err
 	}
+	if err := os.MkdirAll("logs/checkout", 0777); err != nil {
+		return err
+	}
 
 	file, err := os.Create("logs/clone/errors")
 	if err != nil {
@@ -105,6 +108,22 @@ func initDirsSystem() error {
 	}
 
 	file, err = os.Create("logs/pull/info")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/checkout/errors")
+	if err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	file, err = os.Create("logs/checkout/info")
 	if err != nil {
 		return err
 	}
