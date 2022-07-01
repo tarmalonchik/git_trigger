@@ -1,7 +1,6 @@
 package commandLine
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
@@ -139,17 +138,26 @@ func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 
 func (c *Client) Checkout(ctx context.Context, branchName string) error {
 	const (
-		lookForString = "did not match any file(s) known to git"
+		lookForString  = "did not match any file(s) known to git"
+		infoFileName   = "logs/checkout/info"
+		errorsFileName = "logs/checkout/errors"
 	)
-	var (
-		info   = bytes.NewBuffer([]byte{})
-		errors = bytes.NewBuffer([]byte{})
-	)
+
+	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Maker error making info file: %w", err)
+	}
+	defer func() { _ = infoFile.Close() }()
+	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.Maker error making errors file: %w", err)
+	}
+	defer func() { _ = errorsFile.Close() }()
 
 	cmd := exec.CommandContext(ctx, "git", "checkout", branchName)
 	cmd.Dir = c.dir
-	cmd.Stdout = info
-	cmd.Stderr = errors
+	cmd.Stdout = infoFile
+	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("commandLine.Checkout error start: %w", err)
@@ -159,7 +167,12 @@ func (c *Client) Checkout(ctx context.Context, branchName string) error {
 		return fmt.Errorf("commandLine.Checkout error wait: %w", err)
 	}
 
-	if strings.Contains(errors.String(), lookForString) {
+	data, err := ioutil.ReadFile(errorsFileName)
+	if err != nil {
+		return fmt.Errorf("commandLine.Checkout error reading file: %w", err)
+	}
+
+	if strings.Contains(string(data), lookForString) {
 		return nil
 	}
 	return nil
