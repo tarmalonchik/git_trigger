@@ -35,13 +35,12 @@ func (t *Worker) Run(ctx context.Context) error {
 		return fmt.Errorf("workers.Run error cloning: %w", err)
 	}
 
-	if err := t.client.Checkout(ctx, t.branchName); err != nil {
-		return fmt.Errorf("workers.Run error checkout: %w", err)
+	if err := t.client.PullAll(ctx); err != nil {
+		logrus.Errorf("workers.check error pulling first time: %v", err)
 	}
 
-	_, err := t.client.Pull(ctx)
-	if err != nil {
-		logrus.Errorf("workers.check error pulling first time: %v", err)
+	if err := t.client.Checkout(ctx, t.branchName); err != nil {
+		return fmt.Errorf("workers.Run error checkout: %w", err)
 	}
 
 	if err := t.client.Maker(ctx, t.makeCommand); err != nil {
@@ -78,7 +77,7 @@ func (t *Worker) Run(ctx context.Context) error {
 func (t *Worker) check(ctx context.Context) {
 	for {
 		time.Sleep(1 * time.Second)
-		action, err := t.client.Pull(ctx)
+		action, err := t.client.PullBranch(ctx, t.branchName)
 		if err != nil {
 			logrus.Errorf("workers.check error getting action: %v", err)
 			continue

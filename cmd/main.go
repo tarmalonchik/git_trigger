@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/Alan-prog/git_trigger/pkg/commandLine"
@@ -54,76 +55,55 @@ func main() {
 }
 
 func initDirsSystem() error {
-	if err := os.MkdirAll("logs/clone", 0777); err != nil {
-		return err
-	}
-	if err := os.MkdirAll("logs/maker", 0777); err != nil {
-		return err
-	}
-	if err := os.MkdirAll("logs/pull", 0777); err != nil {
-		return err
-	}
-	if err := os.MkdirAll("logs/checkout", 0777); err != nil {
-		return err
+	if err := createFolders([]string{
+		"logs/clone",
+		"logs/maker",
+		"logs/pull",
+		"logs/checkout",
+		"logs/pull_all",
+	}); err != nil {
+		return fmt.Errorf("error creating fodlers: %w", err)
 	}
 
-	file, err := os.Create("logs/clone/errors")
-	if err != nil {
-		return err
+	if err := createFiles([]string{
+		"logs/clone/errors",
+		"logs/clone/info",
+		"logs/clone/errors",
+		"logs/clone/info",
+		"logs/maker/errors",
+		"logs/maker/info",
+		"logs/pull/errors",
+		"logs/pull/info",
+		"logs/checkout/errors",
+		"logs/checkout/info",
+		"logs/pull_all/errors",
+		"logs/pull_all/info",
+	}); err != nil {
+		return fmt.Errorf("error creating files: %w", err)
 	}
-	if err := file.Close(); err != nil {
-		return err
-	}
+	return nil
+}
 
-	file, err = os.Create("logs/clone/info")
-	if err != nil {
-		return err
+func createFolders(names []string) error {
+	for i := range names {
+		if err := os.MkdirAll(names[i], 0777); err != nil {
+			return err
+		}
 	}
-	if err := file.Close(); err != nil {
-		return err
-	}
+	return nil
+}
 
-	file, err = os.Create("logs/maker/errors")
-	if err != nil {
-		return err
+func createFiles(files []string) error {
+	for i := range files {
+		if err := createFile(files[i]); err != nil {
+			return err
+		}
 	}
-	if err := file.Close(); err != nil {
-		return err
-	}
+	return nil
+}
 
-	file, err = os.Create("logs/maker/info")
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	file, err = os.Create("logs/pull/errors")
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	file, err = os.Create("logs/pull/info")
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	file, err = os.Create("logs/checkout/errors")
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	file, err = os.Create("logs/checkout/info")
+func createFile(name string) error {
+	file, err := os.Create(name)
 	if err != nil {
 		return err
 	}

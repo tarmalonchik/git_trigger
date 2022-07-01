@@ -63,7 +63,7 @@ func (c *Client) Clone(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) Pull(ctx context.Context) (bool, error) {
+func (c *Client) PullBranch(ctx context.Context, branchName string) (bool, error) {
 	const (
 		infoFileName   = "logs/pull/info"
 		errorsFileName = "logs/pull/errors"
@@ -81,7 +81,7 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 	}
 	defer func() { _ = errorsFile.Close() }()
 
-	cmd := exec.CommandContext(ctx, "git", "pull", "origin", "master", "--progress")
+	cmd := exec.CommandContext(ctx, "git", "pull", "origin", branchName, "--progress")
 	cmd.Dir = c.dir
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
@@ -103,6 +103,39 @@ func (c *Client) Pull(ctx context.Context) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func (c *Client) PullAll(ctx context.Context) error {
+	const (
+		infoFileName   = "logs/pull_all/info"
+		errorsFileName = "logs/pull_all/errors"
+	)
+
+	infoFile, err := os.OpenFile(infoFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.PullAll error making info file: %w", err)
+	}
+	defer func() { _ = infoFile.Close() }()
+	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("commandLine.PullAll error making errors file: %w", err)
+	}
+	defer func() { _ = errorsFile.Close() }()
+
+	cmd := exec.CommandContext(ctx, "git", "pull", "--all", "--progress")
+	cmd.Dir = c.dir
+	cmd.Stdout = infoFile
+	cmd.Stderr = errorsFile
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("commandLine.PullAll error start: %w", err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return fmt.Errorf("commandLine.PullAll error wait: %w", err)
+	}
+
+	return nil
 }
 
 func (c *Client) Maker(ctx context.Context, makeCommand string) error {
