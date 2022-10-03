@@ -161,7 +161,7 @@ func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("commandLine.Maker error start: %w", err)
+		return fmt.Errorf("commandLine.Maker error start dir=%s: %w", c.dir, err)
 	}
 	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("commandLine.Maker error wait: %w", err)
