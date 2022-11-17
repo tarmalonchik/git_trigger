@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Alan-prog/git_trigger/pkg/commandLine"
 	"github.com/sirupsen/logrus"
+	"github.com/tarmalonchik/git_trigger/pkg/commandLine"
 )
 
 type Worker struct {

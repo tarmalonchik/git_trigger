@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Alan-prog/git_trigger/pkg/commandLine"
-	"github.com/Alan-prog/git_trigger/pkg/workers"
 	"github.com/sirupsen/logrus"
+	"github.com/tarmalonchik/git_trigger/pkg/commandLine"
+	"github.com/tarmalonchik/git_trigger/pkg/workers"
 )
 
 const (

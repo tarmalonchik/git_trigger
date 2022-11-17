@@ -3,7 +3,6 @@ package commandLine
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -54,7 +53,7 @@ func (c *Client) Clone(ctx context.Context) error {
 	}
 
 	if err := cmd.Wait(); err != nil {
-		data, err := ioutil.ReadFile(errorsFileName)
+		data, err := os.ReadFile(errorsFileName)
 		if strings.Contains(string(data), lookForString) {
 			return nil
 		}
@@ -94,7 +93,7 @@ func (c *Client) PullBranch(ctx context.Context, branchName string) (bool, error
 		return false, fmt.Errorf("commandLine.Pull error wait: %w", err)
 	}
 
-	data, err := ioutil.ReadFile(infoFileName)
+	data, err := os.ReadFile(infoFileName)
 	if err != nil {
 		return false, fmt.Errorf("commandLine.Pull error reading file: %w", err)
 	}
@@ -200,7 +199,7 @@ func (c *Client) Checkout(ctx context.Context, branchName string) error {
 		return fmt.Errorf("commandLine.Checkout error wait: %w", err)
 	}
 
-	data, err := ioutil.ReadFile(errorsFileName)
+	data, err := os.ReadFile(errorsFileName)
 	if err != nil {
 		return fmt.Errorf("commandLine.Checkout error reading file: %w", err)
 	}

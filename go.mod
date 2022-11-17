@@ -1,4 +1,4 @@
-module github.com/Alan-prog/git_trigger
+module github.com/tarmalonchik/git_trigger
 
 go 1.17
 

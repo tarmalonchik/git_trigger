@@ -41,7 +41,7 @@ linters-settings:
       - name: unexported-return
         disabled: true
   goimports:
-    local-prefixes: github.com/Alan-prog/wireguard_vpn
+    local-prefixes: github.com/tarmalonchik/wireguard_vpn
 
 issues:
   exclude-rules:
