@@ -10,20 +10,13 @@ import (
 	"github.com/tarmalonchik/git_trigger/pkg/workers"
 )
 
-const (
-	defaultBranchName = "master"
-)
-
 func main() {
-	var (
-		branchName string
-	)
-
 	ctx := context.Background()
 
 	args := os.Args
-	if len(args) > 4 || len(args) < 3 {
-		logrus.Errorf("command format should have 2 or 3 params repoName,makeCommand and branchName (is not requeired default using master)")
+
+	if len(args) != 5 {
+		logrus.Errorf("command format should have 4 params repoName, destPath, makeCommand, and branchName")
 		return
 	}
 
@@ -32,24 +25,19 @@ func main() {
 		return
 	}
 
-	repo := args[1]
-	makeCommand := args[2]
-	if len(args) > 3 {
-		branchName = args[3]
-	}
+	repoName := args[1]
+	destPath := args[2]
+	makeCommand := args[3]
+	branchName := args[4]
 
-	if branchName == "" {
-		branchName = defaultBranchName
-	}
-
-	consoleConf, err := commandLine.NewClient(repo)
+	consoleConf, err := commandLine.NewClient(repoName, destPath, makeCommand, branchName)
 	if err != nil {
 		logrus.Errorf("error init consoleConf: %v", err)
 		return
 	}
 
-	worker := workers.NewWorker(consoleConf, makeCommand, branchName)
-	if err := worker.Run(ctx); err != nil {
+	worker := workers.NewWorker(consoleConf)
+	if err = worker.Run(ctx); err != nil {
 		logrus.Errorf("error Runner: %v", err)
 	}
 }

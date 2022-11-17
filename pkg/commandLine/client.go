@@ -9,21 +9,26 @@ import (
 )
 
 type Client struct {
-	pullString string
-	dir        string
+	pullString  string
+	projectName string
+	destPath    string
+	makeCommand string
+	branchName  string
 }
 
-func NewClient(repo string) (*Client, error) {
-	spt := strings.Split(repo, "/")
+func NewClient(repoName, destPath, makeCommand, branchName string) (*Client, error) {
+	spt := strings.Split(repoName, "/")
 	if len(spt) != 2 {
 		return nil, fmt.Errorf("commandLine.NewClient bad repo")
 	}
 
-	c := &Client{}
-
-	c.pullString = "git@github.com:" + repo + ".git"
-	c.dir = spt[1]
-	return c, nil
+	return &Client{
+		destPath:    destPath,
+		pullString:  "git@github.com:" + repoName + ".git",
+		projectName: spt[1],
+		makeCommand: makeCommand,
+		branchName:  branchName,
+	}, nil
 }
 
 func (c *Client) Clone(ctx context.Context) error {
@@ -38,6 +43,7 @@ func (c *Client) Clone(ctx context.Context) error {
 		return fmt.Errorf("commandLine.Clone error making info file: %w", err)
 	}
 	defer func() { _ = infoFile.Close() }()
+
 	errorsFile, err := os.OpenFile(errorsFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return fmt.Errorf("commandLine.Clone error making errors file: %w", err)
@@ -45,6 +51,7 @@ func (c *Client) Clone(ctx context.Context) error {
 	defer func() { _ = errorsFile.Close() }()
 
 	cmd := exec.CommandContext(ctx, "git", "clone", c.pullString, "--progress")
+	cmd.Dir = c.destPath
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
 
@@ -62,7 +69,7 @@ func (c *Client) Clone(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) PullBranch(ctx context.Context, branchName string) (bool, error) {
+func (c *Client) PullBranch(ctx context.Context) (bool, error) {
 	const (
 		infoFileName   = "logs/pull/info"
 		errorsFileName = "logs/pull/errors"
@@ -80,8 +87,8 @@ func (c *Client) PullBranch(ctx context.Context, branchName string) (bool, error
 	}
 	defer func() { _ = errorsFile.Close() }()
 
-	cmd := exec.CommandContext(ctx, "git", "pull", "origin", branchName, "--progress")
-	cmd.Dir = c.dir
+	cmd := exec.CommandContext(ctx, "git", "pull", "origin", c.branchName, "--progress")
+	cmd.Dir = c.getProjectPath()
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
 
@@ -122,7 +129,7 @@ func (c *Client) PullAll(ctx context.Context) error {
 	defer func() { _ = errorsFile.Close() }()
 
 	cmd := exec.CommandContext(ctx, "git", "pull", "--all", "--progress")
-	cmd.Dir = c.dir
+	cmd.Dir = c.getProjectPath()
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
 
@@ -137,7 +144,7 @@ func (c *Client) PullAll(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) Maker(ctx context.Context, makeCommand string) error {
+func (c *Client) Maker(ctx context.Context) error {
 	const (
 		infoFileName   = "logs/maker/info"
 		errorsFileName = "logs/maker/errors"
@@ -154,13 +161,13 @@ func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 	}
 	defer func() { _ = errorsFile.Close() }()
 
-	cmd := exec.CommandContext(ctx, "make", makeCommand)
-	cmd.Dir = c.dir
+	cmd := exec.CommandContext(ctx, "make", c.makeCommand)
+	cmd.Dir = c.getProjectPath()
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("commandLine.Maker error start dir=%s: %w", c.dir, err)
+		return fmt.Errorf("commandLine.Maker error start fullPath = %s: %w", c.projectName, err)
 	}
 	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("commandLine.Maker error wait: %w", err)
@@ -168,7 +175,7 @@ func (c *Client) Maker(ctx context.Context, makeCommand string) error {
 	return nil
 }
 
-func (c *Client) Checkout(ctx context.Context, branchName string) error {
+func (c *Client) Checkout(ctx context.Context) error {
 	const (
 		lookForString  = "did not match any file(s) known to git"
 		infoFileName   = "logs/checkout/info"
@@ -186,8 +193,8 @@ func (c *Client) Checkout(ctx context.Context, branchName string) error {
 	}
 	defer func() { _ = errorsFile.Close() }()
 
-	cmd := exec.CommandContext(ctx, "git", "checkout", branchName)
-	cmd.Dir = c.dir
+	cmd := exec.CommandContext(ctx, "git", "checkout")
+	cmd.Dir = c.getProjectPath()
 	cmd.Stdout = infoFile
 	cmd.Stderr = errorsFile
 
@@ -208,4 +215,11 @@ func (c *Client) Checkout(ctx context.Context, branchName string) error {
 		return nil
 	}
 	return nil
+}
+
+func (c *Client) getProjectPath() string {
+	if c.destPath[len(c.destPath)-1] == '/' {
+		return c.destPath + c.projectName
+	}
+	return c.destPath + "/" + c.projectName
 }
