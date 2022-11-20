@@ -1,4 +1,3 @@
 .idea
 logs/*
 bin/process_git_trigger
-wireguard_vpn

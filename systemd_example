@@ -6,7 +6,7 @@ After=network-online.target ssh-agent.service
 [Service]
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin
 Environment=HOME=/root
-ExecStart=/root/go/bin/git_trigger tarmalonchik/wireguard_vpn /root master master
+ExecStart=/root/go/bin/git_trigger tarmalonchik/project_name /root master master
 
 [Install]
 WantedBy=multi-user.target
